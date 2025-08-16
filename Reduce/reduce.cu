@@ -13,14 +13,10 @@ __global__ void reduce(float* a,float* a_d){
             input_begin[tid]+=input_begin[tid+i];
         }
         __syncthreads();
-    }
-    
+    }    
     if(tid==0){
         a_d[blockIdx.x]=input_begin[0];
     }
-
-
-
 }
 
 bool check(float *out,float *res,int n){
