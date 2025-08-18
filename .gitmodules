@@ -1,3 +1,6 @@
 [submodule "third_party/cutlass"]
 	path = third_party/cutlass
 	url = git@github.com:NVIDIA/cutlass.git
+[submodule "third_party/LeetCUDA"]
+	path = third_party/LeetCUDA
+	url = git@github.com:xlite-dev/LeetCUDA.git
