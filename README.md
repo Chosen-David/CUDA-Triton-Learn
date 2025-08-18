@@ -6,12 +6,12 @@
 
 目前：
 
-Elementwise系列：add f16与f32的向量化访存
+Elementwise系列：add f16与f32的向量化访存、cute版本
 
 Reduce系列：naive版本、Unroll版本
 
 GEMM系列：naive版本、双缓冲优化
 
-cute系列：naive版本
+flash_atten系列：更新ing
 
 
