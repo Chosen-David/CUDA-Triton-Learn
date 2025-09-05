@@ -12,9 +12,9 @@
 #include <vector>
 
 
-#define FLOAT4(v)=*reinterpret_cast<float4 *>(&v)//也可以用[0]解引用
-#define HALF2(v)=*reinterpret_cast<half2 *>(&v)
-#define HALF8(v)=*reinterpret_cast<float4 *>(&v)
+#define FLOAT4(v) *reinterpret_cast<float4 *>(&v)//也可以用[0]解引用
+#define HALF2(v) *reinterpret_cast<half2 *>(&v)
+#define HALF8(v) *reinterpret_cast<float4 *>(&v)
 
 // ElementWise Add + Vec4
 // grid(N/256), block(256/4)

@@ -8,8 +8,18 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <torch/extension.h>
-#include <torch/types.h>
+#ifdef BUILD_STANDALONE
+  // standalone path: no torch headers
+  #include <cuda_runtime.h>
+  #include <cuda_fp16.h>
+  // provide any minimal helpers/macros you used to rely on from torch
+  // e.g., CHECK macros, etc.
+#else
+  // extension path: use PyTorch C++ extension API
+  #include <torch/extension.h>
+  #include <torch/types.h>
+#endif
+
 #include <vector>
 using namespace nvcuda;
 #define MMA_M=16

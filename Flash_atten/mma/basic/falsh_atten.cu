@@ -10,7 +10,7 @@ H = num_heads (QKV_head)
 N = 序列长度 （QKV_seqlen）
 d = head_dim (kHeadDim)
 
-启动时：grid(div_ceil(QKV_seqlen, Br), QKV_batch * QKV_head)
+
 
 kMmaTileSeqLenQ其实可以理解成Q的WARP_ROWS，
 

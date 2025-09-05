@@ -34,7 +34,7 @@ __global__ void sgemm_V2(
         const int BN=128;
         const int BK=8;
         const int TM=8;
-        const int TN=8；
+        const int TN=8;
 
         const int bx=blockIdx.x;
         const int by=blockIdx.y;
@@ -66,7 +66,7 @@ __global__ void sgemm_V2(
             int load_b_gmem_k=bk*BK+load_b_smem_k;
             int load_b_gmem_addr=OFFSET(load_b_gmem_k,load_b_gmem_n,N);
             FLOAT4(r_load_a[0])=FLOAT4(a[load_a_gmem_addr]);
-            FLOAT4(r_load_b[0])=FLOAT4(b[load_b_gmem_addr);
+            FLOAT4(r_load_b[0])=FLOAT4(b[load_b_gmem_addr]);
             //bk这时候从1开始，继续gmem->r_load，但是先别急着->smem
             s_a[load_a_smem_k+0][load_a_smem_m]=r_load_a[0];
             s_a[load_a_smem_k+1][load_a_smem_m]=r_load_a[1];

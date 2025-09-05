@@ -14,4 +14,7 @@ GEMM系列：naive版本、双缓冲优化
 
 flash_atten系列：更新ing
 
+Sigmoid系列：naive 、f32_vec4
+
+量化系列： 更新ing
 
