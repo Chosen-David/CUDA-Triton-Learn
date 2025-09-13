@@ -62,3 +62,4 @@ __global__ void sigmoid_f16_vec2(half *x, half *y, int N) {
         HALF2(y[idx])=regy;
     }
 }
+
