@@ -54,12 +54,12 @@ pid 是 program的 id；每个 program 处理 BLOCK_SIZE 个元素；tl.arange(0
 后面的运算和相加也很顺理成章了。
 
 
-## TODO::一个pid可以处理更多的任务吗
+## TODO:一个pid可以处理更多的任务吗
 
 经常写CUDA的同学知道，我们的CUDA经常指定一个BLOCK_SIZE的block后让它内部每个tid处理不止一个元素，那么Triton也可以这样吗？
 
 
-## TODO::关于num_warps、num_stages
+## TODO:关于num_warps、num_stages
 
 Triton 的 triton.Config 给出了默认：num_stages=3（同时默认 num_warps=4）。但是如果希望更深入的理解Triton还是有必要关注一下。
 
