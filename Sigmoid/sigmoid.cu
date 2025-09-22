@@ -62,4 +62,17 @@ __global__ void sigmoid_f16_vec2(half *x, half *y, int N) {
         HALF2(y[idx])=regy;
     }
 }
-
+__global__ void sigmoid_f16_vec8(half* x,half* y,int N){
+  int idx=(threadIdx.x+blockIdx.x*blockDim.x)*8;
+  const half one=__float2half(1.0f);
+  half pack_x[8],pack_y[8]; //用静态数组 pack_x[8] ，而非指针
+  HALF8(pack_x[0]) = HALF8(x[idx]);
+  #pragma unroll
+  for(int i=0;i<8;i++){
+    half v=__hmin(__hmax(pack_x[i],MIN_EXP_F16),MAX_EXP_F16);
+    pack_y[i]=one/(one+hexp(-v));
+  }
+  if(idx+7<N){
+    HALF8(y[idx])=HALF8(pack_y[0]);
+  }
+}

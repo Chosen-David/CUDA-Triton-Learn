@@ -37,10 +37,13 @@ using namespace nvcuda;
 #define FLOAT2(value) (reinterpret_cast<float2 *>(&(value))[0])
 #define FLOAT4(value) (reinterpret_cast<float4 *>(&(value))[0])
 #define HALF2(value) (reinterpret_cast<half2 *>(&(value))[0])
+#define HALF8(value) (reinterpret_cast<float4 *>(&value)[0])
+
 #define BFLOAT2(value) (reinterpret_cast<__nv_bfloat162 *>(&(value))[0])
 #define LDST32BITS(value) (reinterpret_cast<half2 *>(&(value))[0])
 #define LDST64BITS(value) (reinterpret_cast<float2 *>(&(value))[0])
 #define LDST128BITS(value) (reinterpret_cast<float4 *>(&(value))[0])
+
 // gmem -> smem
 #define CP_ASYNC_COMMIT_GROUP() asm volatile("cp.async.commit_group;\n" ::)
 #define CP_ASYNC_WAIT_ALL() asm volatile("cp.async.wait_all;\n" ::)

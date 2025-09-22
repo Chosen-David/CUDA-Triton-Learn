@@ -20,11 +20,6 @@
 } while(0)
 #endif
 
-
-
-
-
-
 // ---------------------------- 计时工具（host） ----------------------------
 static float elapsed_ms(cudaEvent_t beg, cudaEvent_t end) {
   float ms = 0.f;
@@ -81,8 +76,9 @@ void test_sigmoid(int N = (1<<20), int iters = 200) {
   // 3) 通用 launch 参数
   dim3 block(256);
   dim3 grid_naive((N + block.x - 1) / block.x);
-  dim3 grid_v4(((N/4) + block.x - 1) / block.x);
-  dim3 grid_v2(((N/2) + block.x - 1) / block.x);
+  dim3 grid_v4(((N/4) + block.x - 1) / block.x);  // f32 每线程处理4个
+  dim3 grid_v2(((N/2) + block.x - 1) / block.x);  // f16 每线程处理2个
+  dim3 grid_v8(((N/8) + block.x - 1) / block.x);  // f16 每线程处理8个（新增）
 
   // 4) warm-up
   for (int i=0;i<10;++i) {
@@ -90,6 +86,7 @@ void test_sigmoid(int N = (1<<20), int iters = 200) {
     sigmoid_f16_naive<<<grid_naive, block>>>(dx_f16, dy_f16, N);
     sigmoid_f32_vec4 <<<grid_v4,    block>>>(dx_f32, dy_f32, N);
     sigmoid_f16_vec2 <<<grid_v2,    block>>>(dx_f16, dy_f16, N);
+    sigmoid_f16_vec8 <<<grid_v8,    block>>>(dx_f16, dy_f16, N);  // 新增 warm-up
   }
   CHECK_CUDA(cudaDeviceSynchronize());
 
@@ -103,11 +100,16 @@ void test_sigmoid(int N = (1<<20), int iters = 200) {
   float t_f16_naive = bench_kernel(sigmoid_f16_naive, grid_naive, block, dx_f16, dy_f16, N, iters);
   float t_f32_v4    = bench_kernel(sigmoid_f32_vec4,  grid_v4,    block, dx_f32, dy_f32, N, iters);
   float t_f16_v2    = bench_kernel(sigmoid_f16_vec2,  grid_v2,    block, dx_f16, dy_f16, N, iters);
+  float t_f16_v8    = bench_kernel(sigmoid_f16_vec8,  grid_v8,    block, dx_f16, dy_f16, N, iters); // 新增计时
 
   // 7) 正确性校验（与 naive 对比）
   // 为避免被测输出被覆盖，额外各跑一次被测 kernel
   sigmoid_f32_vec4<<<grid_v4, block>>>(dx_f32, dy_f32, N);
   sigmoid_f16_vec2<<<grid_v2, block>>>(dx_f16, dy_f16, N);
+  CHECK_CUDA(cudaDeviceSynchronize());
+
+  // 新增：vec8 的校验
+  sigmoid_f16_vec8<<<grid_v8, block>>>(dx_f16, dy_f16, N);
   CHECK_CUDA(cudaDeviceSynchronize());
 
   std::vector<float> y_f32(N), ref_f32(N);
@@ -125,12 +127,27 @@ void test_sigmoid(int N = (1<<20), int iters = 200) {
     );
   }
 
-  double max_abs_err_f16_vs_naive = 0.0;
+  // 此时 y_f16 存的是 vec8 的输出（因为上面最后一次跑的是 vec8）
+  double max_abs_err_f16_v8_vs_naive = 0.0;
   for (int i=0;i<N;++i) {
     float yf   = __half2float(y_f16[i]);
     float yref = __half2float(ref_f16[i]);
-    max_abs_err_f16_vs_naive = std::max(
-      max_abs_err_f16_vs_naive,
+    max_abs_err_f16_v8_vs_naive = std::max(
+      max_abs_err_f16_v8_vs_naive,
+      std::abs((double)yf - (double)yref)
+    );
+  }
+
+  // 如果也想单独校验 vec2 的误差，可再跑一次 vec2 然后 memcpy 回来比较
+  sigmoid_f16_vec2<<<grid_v2, block>>>(dx_f16, dy_f16, N);
+  CHECK_CUDA(cudaDeviceSynchronize());
+  CHECK_CUDA(cudaMemcpy(y_f16.data(), dy_f16, N*sizeof(half), cudaMemcpyDeviceToHost));
+  double max_abs_err_f16_v2_vs_naive = 0.0;
+  for (int i=0;i<N;++i) {
+    float yf   = __half2float(y_f16[i]);
+    float yref = __half2float(ref_f16[i]);
+    max_abs_err_f16_v2_vs_naive = std::max(
+      max_abs_err_f16_v2_vs_naive,
       std::abs((double)yf - (double)yref)
     );
   }
@@ -141,9 +158,11 @@ void test_sigmoid(int N = (1<<20), int iters = 200) {
   printf("[Time]  f32_vec4  : %.3f ms\n", t_f32_v4);
   printf("[Time]  f16_naive : %.3f ms\n", t_f16_naive);
   printf("[Time]  f16_vec2  : %.3f ms\n", t_f16_v2);
+  printf("[Time]  f16_vec8  : %.3f ms\n", t_f16_v8);
 
-  printf("[MaxErr] f32_vec4 vs f32_naive : %.3e\n", max_abs_err_f32_vs_naive);
-  printf("[MaxErr] f16_vec2 vs f16_naive : %.3e\n", max_abs_err_f16_vs_naive);
+  printf("[MaxErr] f32_vec4 vs f32_naive  : %.3e\n", max_abs_err_f32_vs_naive);
+  printf("[MaxErr] f16_vec2 vs f16_naive  : %.3e\n", max_abs_err_f16_v2_vs_naive);
+  printf("[MaxErr] f16_vec8 vs f16_naive  : %.3e\n", max_abs_err_f16_v8_vs_naive);
 
   // 9) 清理
   cudaFree(dx_f32); cudaFree(dy_f32);

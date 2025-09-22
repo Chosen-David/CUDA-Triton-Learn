@@ -6,7 +6,7 @@
 
 目前：
 
-Elementwise系列：add f16与f32的向量化访存、cute版本
+Elementwise系列：add f16与f32的向量化访存、cute版本、triton版本
 
 Reduce系列：naive版本、Unroll版本
 
