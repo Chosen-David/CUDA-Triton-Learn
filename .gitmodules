@@ -7,3 +7,9 @@
 [submodule "third_party/triton"]
 	path = third_party/triton
 	url = git@github.com:triton-lang/triton.git
+[submodule "third_party/bitsandbytes"]
+	path = third_party/bitsandbytes
+	url = git@github.com:bitsandbytes-foundation/bitsandbytes.git
+[submodule "third_party/Liger-Kernel"]
+	path = third_party/Liger-Kernel
+	url = git@github.com:linkedin/Liger-Kernel.git
