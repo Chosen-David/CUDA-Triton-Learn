@@ -1,6 +1,8 @@
 # Ref
 1. [知乎](https://zhuanlan.zhihu.com/p/1904937907703243110)
 2. [flashinfer 论文](https://www.arxiv.org/pdf/2501.01005)
+3. [log-sum-exp trick](https://www.youtube.com/watch?v=MZ2VM32h37g&t=2s)
+4. [BPT](https://ar5iv.labs.arxiv.org/html/2305.19370?_immersive_translate_auto_translate=1)
 
 # flashinfer
 
@@ -30,5 +32,11 @@
 
 `Dynamic-aware Compiler & Runtime`：根据 Attention Variant Specification（注意力变体定义）、Task Information、KV-Cache layout specification 生成最优的 Attention 内核代码，另外Load-balancing Scheduler，在运行时根据 Sequence length information（当前 batch 每个请求的 query 长度 / KV 长度）做任务分配（plan）。并且预分配工作区，保存 plan 阶段生成的元数据（调度信息、临时输出等），供持久化内核在 run 阶段使用。这样内核本身的 grid / block 配置可以保持静态，从而和 CUDA Graph 兼容。
 
+
+# LSE
+
+![alt text](LSE.png)
+
+如图，避免多个指数和过大造成溢出的方法。其实思想就很像SafeSoftmax那样。
 
 
