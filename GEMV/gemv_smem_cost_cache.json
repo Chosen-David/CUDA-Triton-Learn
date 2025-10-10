@@ -1,0 +1,4 @@
+[
+  {"M": 2048, "K": 4096, "tile_k_half": 1280, "k_stage": 4, "best_gflops": 21.629043, "shared_bytes": 10240},
+  {"M": 2048, "K": 2048, "tile_k_half": 1536, "k_stage": 2, "best_gflops": 12.331778, "shared_bytes": 6144}
+]
