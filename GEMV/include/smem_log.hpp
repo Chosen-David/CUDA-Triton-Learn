@@ -4,9 +4,7 @@
 #include <vector>
 #include <cuda_runtime.h>
 
-// 引入你的成本模型/结构体（就在这个头里声明，cpp 里会包含 gemv_smem.cuh）
-struct GemvSmemTrialTrace;
-struct GemvSmemCostModelResult;
+#include "../gemv_smem_cost_model.cuh"
 
 namespace smemlog {
 

@@ -5,10 +5,8 @@
 #include <iomanip>
 #include <iostream>
 
-// 直接包含你已有的 gemv_smem.cuh，以拿到 GemvSmemTrialTrace / GemvSmemCostModelResult
-// 和 gemv_smem_cost_model(...) 的声明
-#define GEMV_SMEM_ONLY_DECL
-#include "../gemv_smem.cuh"
+// 引入成本模型和辅助工具
+#include "../gemv_smem_cost_model.cuh"
 
 namespace {
 constexpr const char* kCacheFile  = "gemv_smem_cost_cache.json";

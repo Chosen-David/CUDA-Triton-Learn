@@ -6,7 +6,8 @@
 #include <iostream>
 
 #include "../gemv.h"          // launch_gemv_with_smem_max
-#include "../gemv_smem.cuh"   // gemv_smem + gemv_smem_detail::compute_num_per_thread_half
+#include "../gemv_smem.cuh"   // gemv_smem kernel
+#include "../gemv_smem_cost_model.cuh"  // gemv_smem_detail::compute_num_per_thread_half
 #include "fast_gemv.cuh"      // gemv_fp16
 #include "../include/smem_log.hpp"  // smemlog::query_or_search
 
@@ -81,38 +82,17 @@ inline void fp16Vec4Wrapper(const half* A, const half* B, half* C,
 
 inline void smemVec4Wrapper(const half* A, const half* B, half* C,
                             size_t M, size_t K, cudaStream_t stream) {
-  if (M == 0 || K == 0) return;
-#ifndef NDEBUG
-  if ((K & 7) != 0) { std::cerr << "[smemVec4Wrapper] K%8!=0\n"; std::exit(EXIT_FAILURE); }
-#endif
-  using namespace fastgemv_impl;
-  dim3 block(kBlockDimX, kBlockDimY);
-  const size_t rows_per_tile = kBlockDimY;
-  const size_t fast_rows     = (M / rows_per_tile) * rows_per_tile;
 
-  if (fast_rows) {
-    dim3 grid(1, static_cast<unsigned int>(fast_rows / rows_per_tile));
-    const smemlog::CacheEntry cfg = smemlog::query_or_search(fast_rows, K, stream);
+  dim3 block(32, 1);
+  dim3 grid(1, 4);
 
-    const unsigned int tile_k_half = cfg.tile_k_half ? cfg.tile_k_half : TILE_K_HALF;
-    const unsigned int stage       = cfg.k_stage ? cfg.k_stage : 1u;
-    const unsigned int npt_half    =
-        gemv_smem_detail::compute_num_per_thread_half(tile_k_half,
-                                                      static_cast<unsigned int>(block.x));
-    const size_t shared_bytes = static_cast<size_t>(tile_k_half) *
-                                static_cast<size_t>(stage) * sizeof(half);
-
-    gemv_smem<<<grid, block, shared_bytes, stream>>>(
-        const_cast<half*>(B), const_cast<half*>(A), C,
-        static_cast<unsigned int>(K), npt_half, tile_k_half, stage);
-    CUDA_CHECK(cudaGetLastError());
-  }
-  if (fast_rows < M) {
-    const size_t tail_rows = M - fast_rows;
-    warp16Smem(A, B + fast_rows * K, C + fast_rows, tail_rows, K, stream);
-    CUDA_CHECK(cudaGetLastError());
-  }
+  gemv_smem<<<grid, block>>>(
+      const_cast<half*>(B), const_cast<half*>(A), C,
+      K, M);
+  CUDA_CHECK(cudaGetLastError());
 }
+
+
 
 inline void fastgemv_default(const half* A, const half* B, half* C,
                              size_t M, size_t K, cudaStream_t stream) {
@@ -131,7 +111,7 @@ inline void fastgemv_default(const half* A, const half* B, half* C,
     launch_gemv_with_smem_max(const_cast<half*>(B), const_cast<half*>(A), C,
                               static_cast<unsigned int>(fast_rows),
                               static_cast<unsigned int>(K),
-                              grid, block, npt, stream);
+                              grid, block);
     CUDA_CHECK(cudaGetLastError());
   }
   if (fast_rows < M) {

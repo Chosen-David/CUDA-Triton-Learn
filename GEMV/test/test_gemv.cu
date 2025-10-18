@@ -18,7 +18,7 @@
 #include "../gemv.h"
 #include "../gemv_kstages.cuh"
 #include "../gemv_kstages_persistance.cuh"
-
+ 
 #include "../benchmark/benchmark_types.hpp"
 #include "../benchmark/benchmark_io.hpp"
 #include "../benchmark/fastgemv_wrappers.cuh"
