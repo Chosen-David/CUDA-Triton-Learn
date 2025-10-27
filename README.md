@@ -8,19 +8,22 @@
 
 ## 目前进展
 
+{% assign baseurl = "https://github.com/Chosen-David/CUDA-Triton-Learn/tree/main" %}
+
 ### 基础算子
 
-Elementwise系列：add f16与f32的向量化访存、cute版本、triton版本
 
-Reduce系列：naive版本、Unroll版本
+[Add系列]({{baseurl}}/Elementwise/Add): f16与f32的向量化访存、cute版本、triton版本
 
-GEMM系列：naive版本、双缓冲优化
+[Reduce系列](https://github.com/Chosen-David/CUDA-Triton-Learn/tree/main/Reduce)：naive版本、Unroll版本
 
-GEMV系列：FastGEMV版本、smem版本
+[GEMM系列](https://github.com/Chosen-David/CUDA-Triton-Learn/tree/main/GEMM)：naive版本、双缓冲优化
+
+[GEMV系列](https://github.com/Chosen-David/CUDA-Triton-Learn/tree/main/GEMV)：FastGEMV版本、smem版本
 
 ### 大模型算子
 
-RoPE系列：triton版本
+[RoPE系列](https://github.com/Chosen-David/CUDA-Triton-Learn/tree/main/RoPE)：triton版本
 
 Sigmoid系列：naive 、f32_vec4
 
