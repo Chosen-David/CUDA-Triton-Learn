@@ -29,7 +29,7 @@
 
 [PagedAttention系列](https://github.com/Chosen-David/CUDA-Triton-Learn/tree/main/PagedAttention)：cuda版本
 
-[MergeAttention](https://github.com/Chosen-David/CUDA-Triton-Learn/tree/main/MergeAttention)：triton版本
+[MergedAttention](https://github.com/Chosen-David/CUDA-Triton-Learn/tree/main/MergedAttention)：triton版本
 
 [量化系列](https://github.com/Chosen-David/CUDA-Triton-Learn/tree/main/Quant)： LLM.int8()版本
 
