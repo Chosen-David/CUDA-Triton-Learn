@@ -31,7 +31,7 @@
 
 [MergeAttention](https://github.com/Chosen-David/CUDA-Triton-Learn/tree/main/MergeAttention)：triton版本
 
-量化系列： LLM.int8()版本
+[量化系列](https://github.com/Chosen-David/CUDA-Triton-Learn/tree/main/Quant)： LLM.int8()版本
 
 # Ref
 1. [LeetCUDA](https://github.com/xlite-dev/LeetCUDA)
