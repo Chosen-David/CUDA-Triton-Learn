@@ -8,12 +8,10 @@
 
 ## 目前进展
 
-{% assign baseurl = "https://github.com/Chosen-David/CUDA-Triton-Learn/tree/main" %}
-
 ### 基础算子
 
 
-[Add系列]({{baseurl}}/Elementwise/Add): f16与f32的向量化访存、cute版本、triton版本
+[Add系列](https://github.com/Chosen-David/CUDA-Triton-Learn/tree/main/Elementwise/Add): f16与f32的向量化访存、cute版本、triton版本
 
 [Reduce系列](https://github.com/Chosen-David/CUDA-Triton-Learn/tree/main/Reduce)：naive版本、Unroll版本
 
@@ -25,13 +23,13 @@
 
 [RoPE系列](https://github.com/Chosen-David/CUDA-Triton-Learn/tree/main/RoPE)：triton版本
 
-Sigmoid系列：naive 、f32_vec4
+[Sigmoid系列](https://github.com/Chosen-David/CUDA-Triton-Learn/tree/main/Sigmoid)：naive 、f32_vec4
 
-FlashAttention系列：cute版本、cuda版本
+[FlashAttention系列](https://github.com/Chosen-David/CUDA-Triton-Learn/tree/main/FlashAttention)：cute版本、cuda版本
 
-PagedAttention系列：cuda版本
+[PagedAttention系列](https://github.com/Chosen-David/CUDA-Triton-Learn/tree/main/PagedAttention)：cuda版本
 
-MergeAttention：triton版本
+[MergeAttention](https://github.com/Chosen-David/CUDA-Triton-Learn/tree/main/MergeAttention)：triton版本
 
 量化系列： LLM.int8()版本
 
